@@ -17,7 +17,7 @@
   "author": "Nicolas Keller",
   "license": "ISC",
   "dependencies": {
-    "tggl-client": "^1.1.2"
+    "tggl-client": "^1.3.0"
   },
   "devDependencies": {
     "@jest/types": "^28.0.2",

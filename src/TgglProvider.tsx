@@ -32,7 +32,8 @@ export const TgglProvider: FC<{
 }> = ({ children, client, initialContext = {} }) => {
   const ref = useRef({
     context: initialContext,
-    loading: false,
+    loading: 0,
+    loadedOnce: false,
     error: null as any,
     onChange: new Map<string, () => void>(),
   })
@@ -40,7 +41,8 @@ export const TgglProvider: FC<{
   const setContext = useCallback(
     (context: Record<string, any>) => {
       ref.current.context = context
-      ref.current.loading = true
+      ref.current.loading++
+      ref.current.loadedOnce = true
       ref.current.error = null
       for (const callback of ref.current.onChange.values()) {
         callback()
@@ -51,7 +53,7 @@ export const TgglProvider: FC<{
           ref.current.error = error
         })
         .then(() => {
-          ref.current.loading = false
+          ref.current.loading--
           for (const callback of ref.current.onChange.values()) {
             callback()
           }
@@ -66,7 +68,7 @@ export const TgglProvider: FC<{
       setContext,
       updateContext: (context) =>
         setContext({ ...ref.current.context, ...context }),
-      getLoading: () => ref.current.loading,
+      getLoading: () => ref.current.loading > 0 && !ref.current.loadedOnce,
       getError: () => ref.current.error,
       onChange: (callback) => {
         const key = String(counter++)
@@ -79,7 +81,9 @@ export const TgglProvider: FC<{
 
   useEffect(() => {
     setContext(initialContext)
-  }, [initialContext, setContext])
+    // We do not want to trigger this effect everytime the initialContext changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setContext])
 
   return <TgglContext.Provider value={value}>{children}</TgglContext.Provider>
 }

@@ -15,6 +15,7 @@ type Context = {
   getLoading: () => boolean
   getError: () => any
   onChange: (callback: () => void) => void
+  trackFlagEvaluation: (slug: string) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -29,14 +30,27 @@ export const TgglProvider: FC<{
   client: TgglClient
   children: any
   initialContext?: Record<string, any>
-}> = ({ children, client, initialContext = {} }) => {
+  onFlagEvaluation?: (opts: {
+    slug: string
+    active: boolean
+    value: unknown
+  }) => void
+}> = ({
+  children,
+  client,
+  initialContext = {},
+  onFlagEvaluation = () => null,
+}) => {
   const ref = useRef({
     context: initialContext,
     loading: 0,
     loadedOnce: false,
     error: null as any,
     onChange: new Map<string, () => void>(),
+    onFlagEvaluation,
   })
+
+  ref.current.onFlagEvaluation = onFlagEvaluation
 
   const setContext = useCallback(
     (context: Record<string, any>) => {
@@ -75,6 +89,12 @@ export const TgglProvider: FC<{
         ref.current.onChange.set(key, callback)
         return () => ref.current.onChange.delete(key)
       },
+      trackFlagEvaluation: (slug) =>
+        ref.current.onFlagEvaluation({
+          slug,
+          active: client.isActive(slug),
+          value: client.get(slug, null),
+        }),
     }),
     [client, setContext]
   )

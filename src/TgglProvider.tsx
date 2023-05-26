@@ -26,6 +26,24 @@ let counter = 0
 
 export const useTggl = () => useContext(TgglContext)
 
+let amplitude: { track: (name: string, properties: any) => void } | null = null
+
+try {
+  amplitude = require('@amplitude/analytics-browser')
+} catch (e) {
+  // ignore
+}
+
+const defaultOnFlagEvaluation = (opts: {
+  slug: string
+  active: boolean
+  value: unknown
+}) => {
+  if (amplitude) {
+    amplitude.track('[Tggl] Flag evaluated', opts)
+  }
+}
+
 export const TgglProvider: FC<{
   client: TgglClient
   children: any
@@ -39,7 +57,7 @@ export const TgglProvider: FC<{
   children,
   client,
   initialContext = {},
-  onFlagEvaluation = () => null,
+  onFlagEvaluation = defaultOnFlagEvaluation,
 }) => {
   const ref = useRef({
     context: initialContext,

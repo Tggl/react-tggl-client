@@ -1,27 +1,36 @@
 import { useTggl } from './TgglProvider'
 import { useEffect, useRef, useState } from 'react'
+import { TgglFlagSlug, TgglFlagValue } from 'tggl-client'
 
-function useFlag<T>(slug: string): {
+function useFlag<TSlug extends TgglFlagSlug>(
+  slug: TSlug
+): {
   readonly active: boolean
-  readonly value: T | undefined
+  readonly value: TgglFlagValue<TSlug> | undefined
   readonly loading: boolean
   readonly error: any
 }
-function useFlag<T>(
-  slug: string,
-  defaultValue: T
+function useFlag<
+  TSlug extends TgglFlagSlug,
+  TDefaultValue = TgglFlagValue<TSlug>
+>(
+  slug: TSlug,
+  defaultValue: TDefaultValue
 ): {
   readonly active: boolean
-  readonly value: T
+  readonly value: TgglFlagValue<TSlug> | TDefaultValue
   readonly loading: boolean
   readonly error: any
 }
-function useFlag<T>(
-  slug: string,
-  defaultValue?: T
+function useFlag<
+  TSlug extends TgglFlagSlug,
+  TDefaultValue = TgglFlagValue<TSlug>
+>(
+  slug: TSlug,
+  defaultValue?: TDefaultValue
 ): {
   readonly active: boolean
-  readonly value: T
+  readonly value: TgglFlagValue<TSlug> | TDefaultValue | undefined
   readonly loading: boolean
   readonly error: any
 } {
@@ -31,7 +40,7 @@ function useFlag<T>(
     listeningToLoadingOrError: false,
     listeningToValue: false,
     active: client.isActive(slug),
-    value: client.get(slug, defaultValue) as T,
+    value: client.get(slug, defaultValue),
     loading: getLoading(),
     error: getError(),
   })
@@ -61,7 +70,7 @@ function useFlag<T>(
     return onChange(() => {
       const oldValues = { ...ref.current }
       ref.current.active = client.isActive(slug)
-      ref.current.value = client.get(slug, defaultValue) as T
+      ref.current.value = client.get(slug, defaultValue)
       ref.current.loading = getLoading()
       ref.current.error = getError()
 

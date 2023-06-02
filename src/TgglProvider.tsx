@@ -6,25 +6,30 @@ import React, {
   useMemo,
   useRef,
 } from 'react'
-import { TgglClient } from 'tggl-client'
+import {
+  TgglClient,
+  TgglContext,
+  TgglFlagSlug,
+  TgglFlagValue,
+} from 'tggl-client'
 
 type Context = {
   client: TgglClient
-  setContext: (context: Record<string, any>) => void
-  updateContext: (context: Record<string, any>) => void
+  setContext: (context: Partial<TgglContext>) => void
+  updateContext: (context: Partial<TgglContext>) => void
   getLoading: () => boolean
   getError: () => any
   onChange: (callback: () => void) => void
-  trackFlagEvaluation: (slug: string) => void
+  trackFlagEvaluation: (slug: TgglFlagSlug) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const TgglContext = React.createContext<Context>({})
+const TgglReactContext = React.createContext<Context>({})
 
 let counter = 0
 
-export const useTggl = () => useContext(TgglContext)
+export const useTggl = () => useContext(TgglReactContext)
 
 let amplitude: { track: (name: string, properties: any) => void } | null = null
 
@@ -47,11 +52,11 @@ const defaultOnFlagEvaluation = (opts: {
 export const TgglProvider: FC<{
   client: TgglClient
   children: any
-  initialContext?: Record<string, any>
-  onFlagEvaluation?: (opts: {
-    slug: string
+  initialContext?: Partial<TgglContext>
+  onFlagEvaluation?: <TSlug extends TgglFlagSlug>(opts: {
+    slug: TSlug
     active: boolean
-    value: unknown
+    value: TgglFlagValue<TSlug>
   }) => void
 }> = ({
   children,
@@ -71,7 +76,7 @@ export const TgglProvider: FC<{
   ref.current.onFlagEvaluation = onFlagEvaluation
 
   const setContext = useCallback(
-    (context: Record<string, any>) => {
+    (context: Partial<TgglContext>) => {
       ref.current.context = context
       ref.current.loading++
       ref.current.loadedOnce = true
@@ -123,5 +128,9 @@ export const TgglProvider: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setContext])
 
-  return <TgglContext.Provider value={value}>{children}</TgglContext.Provider>
+  return (
+    <TgglReactContext.Provider value={value}>
+      {children}
+    </TgglReactContext.Provider>
+  )
 }

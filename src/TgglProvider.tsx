@@ -128,6 +128,14 @@ export const TgglProvider: FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setContext])
 
+  useEffect(() => {
+    return client.onResultChange(() => {
+      for (const callback of ref.current.onChange.values()) {
+        callback()
+      }
+    })
+  }, [client])
+
   return (
     <TgglReactContext.Provider value={value}>
       {children}

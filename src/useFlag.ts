@@ -86,7 +86,8 @@ function useFlag<
 
       if (
         oldValues.active !== ref.current.active ||
-        (oldValues.value !== ref.current.value &&
+        (JSON.stringify(oldValues.value) !==
+          JSON.stringify(ref.current.value) &&
           ref.current.listeningToValue) ||
         (oldValues.loading !== ref.current.loading &&
           ref.current.listeningToLoadingOrError) ||

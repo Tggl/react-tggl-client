@@ -1,6 +1,6 @@
 {
   "name": "react-tggl-client",
-  "version": "1.5.2",
+  "version": "1.6.1",
   "description": "Tggl React wrapper",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
   "author": "Nicolas Keller",
   "license": "ISC",
   "dependencies": {
-    "tggl-client": "^1.11.0"
+    "tggl-client": "^1.13.1"
   },
   "devDependencies": {
     "@jest/types": "^28.0.2",

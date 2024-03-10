@@ -34,7 +34,7 @@ export const useTggl = () => useContext(TgglReactContext)
 let amplitude: { track: (name: string, properties: any) => void } | null = null
 
 try {
-  amplitude = require('@amplitude/analytics-browser')
+  amplitude = require(['@amplitude', 'analytics-browser'].join('/'))
 } catch (e) {
   // ignore
 }

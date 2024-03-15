@@ -12,12 +12,15 @@
     "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/.",
     "lint": "eslint src/.",
-    "test": "jest  --passWithNoTests"
+    "test": "jest  --passWithNoTests",
+    "prepublishOnly": "npm test && rm -rf lib && npm run build",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "author": "Nicolas Keller",
   "license": "ISC",
   "dependencies": {
-    "tggl-client": "^1.13.1"
+    "tggl-client": "^1.13.2"
   },
   "devDependencies": {
     "@jest/types": "^28.0.2",

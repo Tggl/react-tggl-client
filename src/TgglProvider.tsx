@@ -31,13 +31,11 @@ let counter = 0
 
 export const useTggl = () => useContext(TgglReactContext)
 
-let amplitude: { track: (name: string, properties: any) => void } | null = null
-
-try {
-  amplitude = require(['@amplitude', 'analytics-browser'].join('/'))
-} catch (e) {
-  // ignore
-}
+const amplitude:
+  | { track: (name: string, properties: any) => void }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  | undefined = window.amplitude
 
 const defaultOnFlagEvaluation = (opts: {
   slug: string

@@ -67,7 +67,10 @@ function useFlag<
 
   useEffect(() => {
     if (!ref.current.loading && !ref.current.error) {
-      trackFlagEvaluation(slug, { stack: ref.current.stack, defaultValue: ref.current.defaultValue })
+      trackFlagEvaluation(slug, {
+        stack: ref.current.stack,
+        defaultValue: ref.current.defaultValue,
+      })
     }
   }, [slug, trackFlagEvaluation])
 

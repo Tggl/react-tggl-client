@@ -20,7 +20,10 @@ type Context = {
   getLoading: () => boolean
   getError: () => any
   onChange: (callback: () => void) => void
-  trackFlagEvaluation: (slug: TgglFlagSlug, options?: {defaultValue?: any, stack?: string }) => void
+  trackFlagEvaluation: (
+    slug: TgglFlagSlug,
+    options?: { defaultValue?: any; stack?: string }
+  ) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -69,7 +72,7 @@ export const TgglProvider: FC<{
     error: null as any,
     onChange: new Map<string, () => void>(),
     onFlagEvaluation,
-    reporting: client.detachReporting()
+    reporting: client.detachReporting(),
   })
 
   ref.current.onFlagEvaluation = onFlagEvaluation

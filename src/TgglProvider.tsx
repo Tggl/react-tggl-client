@@ -20,7 +20,7 @@ type Context = {
   getLoading: () => boolean
   getError: () => any
   onChange: (callback: () => void) => void
-  trackFlagEvaluation: (slug: TgglFlagSlug) => void
+  trackFlagEvaluation: (slug: TgglFlagSlug, options?: {defaultValue?: any, stack?: string }) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -69,9 +69,14 @@ export const TgglProvider: FC<{
     error: null as any,
     onChange: new Map<string, () => void>(),
     onFlagEvaluation,
+    reporting: client.detachReporting()
   })
 
   ref.current.onFlagEvaluation = onFlagEvaluation
+
+  if (ref.current.reporting) {
+    ref.current.reporting.appPrefix = 'react-client:2.1.0'
+  }
 
   const setContext = useCallback(
     (context: Partial<TgglContext>) => {
@@ -110,12 +115,19 @@ export const TgglProvider: FC<{
         ref.current.onChange.set(key, callback)
         return () => ref.current.onChange.delete(key)
       },
-      trackFlagEvaluation: (slug) =>
+      trackFlagEvaluation: (slug, options = {}) => {
+        ref.current.reporting?.reportFlag(slug, {
+          value: client.get(slug),
+          active: client.isActive(slug),
+          stack: options.stack,
+          default: options.defaultValue,
+        })
         ref.current.onFlagEvaluation({
           slug,
           active: client.isActive(slug),
           value: client.get(slug, null),
-        }),
+        })
+      },
     }),
     [client, setContext]
   )

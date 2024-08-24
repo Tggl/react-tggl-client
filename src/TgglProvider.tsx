@@ -13,6 +13,8 @@ import {
   TgglFlagValue,
 } from 'tggl-client'
 
+export const PACKAGE_VERSION = '2.1.0'
+
 type Context = {
   client: TgglClient
   setContext: (context: Partial<TgglContext>) => void
@@ -78,7 +80,7 @@ export const TgglProvider: FC<{
   ref.current.onFlagEvaluation = onFlagEvaluation
 
   if (ref.current.reporting) {
-    ref.current.reporting.appPrefix = 'react-client:2.1.0'
+    ref.current.reporting.appPrefix = 'react-client:' + PACKAGE_VERSION
   }
 
   const setContext = useCallback(

@@ -9,12 +9,12 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/.",
     "lint": "eslint src/.",
     "test": "jest  --passWithNoTests",
-    "prepublishOnly": "npm test && rm -rf lib && npm run build",
-    "version": "npm run format && git add -A src",
+    "prepublishOnly": "npm test && npm run lint && rm -rf lib && npm run build",
+    "preversion": "npm test && npm run lint",
+    "version": "node scripts/syncVersion.mjs && npm update tggl-client --save && npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "author": "Nicolas Keller",

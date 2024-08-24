@@ -13,7 +13,7 @@ import {
   TgglFlagValue,
 } from 'tggl-client'
 
-export const PACKAGE_VERSION = '2.1.0'
+export const PACKAGE_VERSION = '2.1.1'
 
 type Context = {
   client: TgglClient
@@ -24,7 +24,7 @@ type Context = {
   onChange: (callback: () => void) => void
   trackFlagEvaluation: (
     slug: TgglFlagSlug,
-    options?: { defaultValue?: any; stack?: string }
+    options?: { defaultValue?: any }
   ) => void
 }
 
@@ -124,7 +124,6 @@ export const TgglProvider: FC<{
         ref.current.reporting?.reportFlag(slug, {
           value: client.get(slug),
           active: client.isActive(slug),
-          stack: options.stack,
           default: options.defaultValue,
         })
         ref.current.onFlagEvaluation({

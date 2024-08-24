@@ -43,10 +43,8 @@ function useFlag<
     value: client.get(slug, defaultValue),
     loading: getLoading(),
     error: getError(),
-    stack: undefined as string | undefined,
     defaultValue,
   })
-  ref.current.stack = Error().stack?.split('\n').slice(2).join('\n')
   ref.current.defaultValue = defaultValue
 
   const [value, setValue] = useState({
@@ -68,7 +66,6 @@ function useFlag<
   useEffect(() => {
     if (!ref.current.loading && !ref.current.error) {
       trackFlagEvaluation(slug, {
-        stack: ref.current.stack,
         defaultValue: ref.current.defaultValue,
       })
     }
@@ -89,7 +86,7 @@ function useFlag<
         !ref.current.loading &&
         !ref.current.error
       ) {
-        trackFlagEvaluation(slug, { stack: ref.current.stack, defaultValue })
+        trackFlagEvaluation(slug, { defaultValue })
       }
 
       if (

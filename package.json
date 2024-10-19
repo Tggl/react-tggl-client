@@ -1,7 +1,21 @@
 {
   "name": "react-tggl-client",
   "version": "2.2.0",
-  "description": "Tggl React wrapper",
+  "description": "Tggl React SDK",
+  "keywords": [
+    "Tggl",
+    "React",
+    "SDK",
+    "Feature flag",
+    "Feature toggle",
+    "A/B testing",
+    "Remote config",
+    "Kill switch"
+  ],
+  "author": "Nicolas Keller",
+  "license": "ISC",
+  "homepage": "https://tggl.io/developers/sdks/react",
+  "repository": "https://github.com/Tggl/react-tggl-client",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -17,8 +31,6 @@
     "version": "node scripts/syncVersion.mjs && npm update tggl-client --save && npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "author": "Nicolas Keller",
-  "license": "ISC",
   "dependencies": {
     "tggl-client": "^1.17.0"
   },

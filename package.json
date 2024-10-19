@@ -1,6 +1,6 @@
 {
   "name": "react-tggl-client",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Tggl React SDK",
   "keywords": [
     "Tggl",
@@ -32,7 +32,7 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
-    "tggl-client": "^1.17.0"
+    "tggl-client": "^1.17.2"
   },
   "devDependencies": {
     "@jest/types": "^28.0.2",

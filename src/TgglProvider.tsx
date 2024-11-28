@@ -42,6 +42,12 @@ const amplitude:
   // @ts-ignore
   | undefined = window.amplitude
 
+const intercom:
+  | ((event: 'update', attributes: Record<string, any>) => void)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  | undefined = window.Intercom
+
 const defaultOnFlagEvaluation = (opts: {
   slug: string
   active: boolean
@@ -49,6 +55,10 @@ const defaultOnFlagEvaluation = (opts: {
 }) => {
   if (amplitude) {
     amplitude.track('[Tggl] Flag evaluated', opts)
+  }
+
+  if (intercom) {
+    intercom('update', { [opts.slug]: opts.value })
   }
 }
 

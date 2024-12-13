@@ -32,7 +32,7 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
-    "tggl-client": "^1.17.2"
+    "tggl-client": "^2.0.1"
   },
   "devDependencies": {
     "@jest/types": "^28.0.2",

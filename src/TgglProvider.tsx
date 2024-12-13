@@ -24,7 +24,7 @@ type Context = {
   onChange: (callback: () => void) => void
   trackFlagEvaluation: (
     slug: TgglFlagSlug,
-    options?: { defaultValue?: any }
+    options: { defaultValue: any }
   ) => void
 }
 
@@ -50,7 +50,6 @@ const intercom:
 
 const defaultOnFlagEvaluation = (opts: {
   slug: string
-  active: boolean
   value: unknown
 }) => {
   if (amplitude) {
@@ -68,7 +67,6 @@ export const TgglProvider: FC<{
   initialContext?: Partial<TgglContext>
   onFlagEvaluation?: <TSlug extends TgglFlagSlug>(opts: {
     slug: TSlug
-    active: boolean
     value: TgglFlagValue<TSlug>
   }) => void
 }> = ({
@@ -130,16 +128,14 @@ export const TgglProvider: FC<{
         ref.current.onChange.set(key, callback)
         return () => ref.current.onChange.delete(key)
       },
-      trackFlagEvaluation: (slug, options = {}) => {
+      trackFlagEvaluation: (slug, options) => {
         ref.current.reporting?.reportFlag(slug, {
-          value: client.get(slug),
-          active: client.isActive(slug),
+          value: client.get(slug, options.defaultValue),
           default: options.defaultValue,
         })
         ref.current.onFlagEvaluation({
           slug,
-          active: client.isActive(slug),
-          value: client.get(slug, null),
+          value: client.get(slug, options.defaultValue),
         })
       },
     }),

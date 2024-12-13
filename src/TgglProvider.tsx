@@ -13,7 +13,7 @@ import {
   TgglFlagValue,
 } from 'tggl-client'
 
-export const PACKAGE_VERSION = '2.3.0'
+export const PACKAGE_VERSION = '3.0.0'
 
 type Context = {
   client: TgglClient
@@ -48,10 +48,7 @@ const intercom:
   // @ts-ignore
   | undefined = window.Intercom
 
-const defaultOnFlagEvaluation = (opts: {
-  slug: string
-  value: unknown
-}) => {
+const defaultOnFlagEvaluation = (opts: { slug: string; value: unknown }) => {
   if (amplitude) {
     amplitude.track('[Tggl] Flag evaluated', opts)
   }

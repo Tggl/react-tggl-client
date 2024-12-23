@@ -53,7 +53,7 @@ Use the hook to evaluate flags:
 import { useFlag } from 'react-tggl-client'
  
 const MyComponent = () => {
-  const { active } = useFlag('myFlag')
+  const { value } = useFlag('myFlag', 'Varation A')
  
   //...
 }

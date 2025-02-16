@@ -13,7 +13,7 @@ import {
   TgglFlagValue,
 } from 'tggl-client'
 
-export const PACKAGE_VERSION = '3.0.0'
+export const PACKAGE_VERSION = '3.1.0'
 
 type Context = {
   client: TgglClient

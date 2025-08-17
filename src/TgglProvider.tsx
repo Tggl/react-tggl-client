@@ -118,7 +118,7 @@ export const TgglProvider: FC<{
       setContext,
       updateContext: (context) =>
         setContext({ ...ref.current.context, ...context }),
-      getLoading: () => ref.current.loading > 0 && !ref.current.loadedOnce,
+      getLoading: () => ref.current.loading > 0 || !ref.current.loadedOnce,
       getError: () => ref.current.error,
       onChange: (callback) => {
         const key = String(counter++)

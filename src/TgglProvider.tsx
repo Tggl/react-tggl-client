@@ -40,13 +40,13 @@ const amplitude:
   | { track: (name: string, properties: any) => void }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  | undefined = window.amplitude
+  | undefined = typeof window !== 'undefined' ? window.amplitude : undefined
 
 const intercom:
   | ((event: 'update', attributes: Record<string, any>) => void)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  | undefined = window.Intercom
+  | undefined = typeof window !== 'undefined' ? window.Intercom : undefined
 
 const defaultOnFlagEvaluation = (opts: { slug: string; value: unknown }) => {
   if (amplitude) {

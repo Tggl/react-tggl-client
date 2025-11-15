@@ -5,13 +5,9 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
-import {
-  TgglClient,
-  TgglContext,
-  TgglFlagSlug,
-  TgglFlagValue,
-} from 'tggl-client'
+import { TgglClient, TgglContext } from 'tggl-client'
 
 export const PACKAGE_VERSION = '3.1.2'
 
@@ -19,22 +15,65 @@ type Context = {
   client: TgglClient
   setContext: (context: Partial<TgglContext>) => void
   updateContext: (context: Partial<TgglContext>) => void
-  getLoading: () => boolean
-  getError: () => any
-  onChange: (callback: () => void) => void
-  trackFlagEvaluation: (
-    slug: TgglFlagSlug,
-    options: { defaultValue: any }
-  ) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const TgglReactContext = React.createContext<Context>({})
 
-let counter = 0
+export const useTggl = () => {
+  const { client, setContext, updateContext } = useContext(TgglReactContext)
 
-export const useTggl = () => useContext(TgglReactContext)
+  const ref = useRef({
+    ready: client.isReady(),
+    listenReady: false,
+    error: client.getError(),
+    listenError: false,
+  })
+
+  const [_, rerender] = useState(0)
+
+  useEffect(() => {
+    if (!client.isReady()) {
+      client.onReady(() => {
+        ref.current.ready = true
+
+        if (ref.current.listenReady) {
+          rerender((c) => c + 1)
+        }
+      })
+    }
+    client.onError((error) => {
+      ref.current.error = error
+
+      if (ref.current.listenError) {
+        rerender((c) => c + 1)
+      }
+    })
+    client.onFetchSuccessful(() => {
+      const wasError = ref.current.error !== null
+      ref.current.error = null
+
+      if (ref.current.listenError && wasError) {
+        rerender((c) => c + 1)
+      }
+    })
+  }, [client])
+
+  return {
+    client,
+    setContext,
+    updateContext,
+    get ready() {
+      ref.current.listenReady = true
+      return ref.current.ready
+    },
+    get error() {
+      ref.current.listenError = true
+      return ref.current.error
+    },
+  }
+}
 
 const amplitude:
   | { track: (name: string, properties: any) => void }
@@ -61,54 +100,49 @@ const defaultOnFlagEvaluation = (opts: { slug: string; value: unknown }) => {
 export const TgglProvider: FC<{
   client: TgglClient
   children: any
-  initialContext?: Partial<TgglContext>
-  onFlagEvaluation?: <TSlug extends TgglFlagSlug>(opts: {
-    slug: TSlug
-    value: TgglFlagValue<TSlug>
+  onFlagEval?: (data: {
+    value: unknown
+    default: unknown
+    slug: string
   }) => void
+  onError?: (error: Error) => void
+  onFetchSuccessful?: () => void
 }> = ({
   children,
   client,
-  initialContext = {},
-  onFlagEvaluation = defaultOnFlagEvaluation,
+  onFlagEval = defaultOnFlagEvaluation,
+  onError,
+  onFetchSuccessful,
 }) => {
   const ref = useRef({
-    context: initialContext,
-    loading: 0,
-    loadedOnce: false,
-    error: null as any,
-    onChange: new Map<string, () => void>(),
-    onFlagEvaluation,
-    reporting: client.detachReporting(),
+    onFlagEval,
+    onError,
+    onFetchSuccessful,
   })
 
-  ref.current.onFlagEvaluation = onFlagEvaluation
+  ref.current.onFlagEval = onFlagEval
+  ref.current.onError = onError
+  ref.current.onFetchSuccessful = onFetchSuccessful
 
-  if (ref.current.reporting) {
-    ref.current.reporting.appPrefix = 'react-client:' + PACKAGE_VERSION
-  }
+  useEffect(() => {
+    const u1 = client.onFlagEval((data) => ref.current.onFlagEval(data))
+    const u2 = client.onError((error) => ref.current.onError?.(error))
+    const u3 = client.onFetchSuccessful(() => ref.current.onFetchSuccessful?.())
+
+    return () => {
+      u1()
+      u2()
+      u3()
+    }
+  }, [client])
 
   const setContext = useCallback(
-    (context: Partial<TgglContext>) => {
-      ref.current.context = context
-      ref.current.loading++
-      ref.current.loadedOnce = true
-      ref.current.error = null
-      for (const callback of ref.current.onChange.values()) {
-        callback()
-      }
-      client
-        .setContext(context)
-        .catch((error) => {
-          ref.current.error = error
-        })
-        .then(() => {
-          ref.current.loading--
-          for (const callback of ref.current.onChange.values()) {
-            callback()
-          }
-        })
-    },
+    (context: Partial<TgglContext>) => client.setContext(context),
+    [client]
+  )
+  const updateContext = useCallback(
+    (context: Partial<TgglContext>) =>
+      client.setContext({ ...client.getContext(), ...context }),
     [client]
   )
 
@@ -116,42 +150,10 @@ export const TgglProvider: FC<{
     () => ({
       client,
       setContext,
-      updateContext: (context) =>
-        setContext({ ...ref.current.context, ...context }),
-      getLoading: () => ref.current.loading > 0 || !ref.current.loadedOnce,
-      getError: () => ref.current.error,
-      onChange: (callback) => {
-        const key = String(counter++)
-        ref.current.onChange.set(key, callback)
-        return () => ref.current.onChange.delete(key)
-      },
-      trackFlagEvaluation: (slug, options) => {
-        ref.current.reporting?.reportFlag(slug, {
-          value: client.get(slug, options.defaultValue),
-          default: options.defaultValue,
-        })
-        ref.current.onFlagEvaluation({
-          slug,
-          value: client.get(slug, options.defaultValue),
-        })
-      },
+      updateContext,
     }),
-    [client, setContext]
+    [client, setContext, updateContext]
   )
-
-  useEffect(() => {
-    setContext(initialContext)
-    // We do not want to trigger this effect everytime the initialContext changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setContext])
-
-  useEffect(() => {
-    return client.onResultChange(() => {
-      for (const callback of ref.current.onChange.values()) {
-        callback()
-      }
-    })
-  }, [client])
 
   return (
     <TgglReactContext.Provider value={value}>

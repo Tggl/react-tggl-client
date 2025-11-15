@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import { TgglClient, TgglContext } from 'tggl-client'
 
-export const PACKAGE_VERSION = '3.1.2'
+export const PACKAGE_VERSION = '4.0.0'
 
 type Context = {
   client: TgglClient

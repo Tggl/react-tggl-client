@@ -1,9 +1,15 @@
-export { TgglClient } from 'tggl-client'
+export { TgglProvider } from './TgglProvider.js';
+export type { TgglProviderProps } from './TgglProvider.js';
+export { useTggl } from './useTggl.js';
+export { useFlag } from './useFlag.js';
+export { TgglClient, TgglReporting } from 'tggl-client';
 export type {
   TgglFlagValue,
   TgglFlagSlug,
   TgglFlags,
   TgglContext,
-} from 'tggl-client'
-export { TgglProvider, useTggl } from './TgglProvider'
-export { useFlag } from './useFlag'
+  TgglClientOptions,
+  TgglReport,
+  TgglReportingOptions,
+  TgglStorage,
+} from 'tggl-client';

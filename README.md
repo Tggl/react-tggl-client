@@ -21,6 +21,12 @@
   <a href="https://www.youtube.com/@Tggl-io">🎥 Videos</a>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/actions/workflow/status/Tggl/react-tggl-client/ci.yml" alt="GitHub Workflow Status (with event)" />
+  <img src="https://img.shields.io/coverallsCoverage/github/Tggl/react-tggl-client" alt="Coveralls branch" />
+  <img src="https://img.shields.io/npm/v/react-tggl-client" alt="npm" />
+</p>
+
 ## Usage
 
 Install the dependency:
@@ -35,7 +41,7 @@ Add the provider to your app:
 import { TgglClient, TgglProvider } from 'react-tggl-client'
 
 // Instanciate it outside of your component
-const client = new TgglClient('YOUR_API_KEY')
+const client = new TgglClient({ apiKey: 'YOUR_API_KEY' })
 
 const App = () => {
   return (
@@ -53,7 +59,7 @@ Use the hook to evaluate flags:
 import { useFlag } from 'react-tggl-client'
  
 const MyComponent = () => {
-  const { value } = useFlag('myFlag', 'Varation A')
+  const value = useFlag('myFlag', 'Varation A')
  
   //...
 }

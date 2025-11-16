@@ -1,35 +1,21 @@
 {
   "compilerOptions": {
     "target": "ES2015",
-    "module": "commonjs",
-    "allowJs": false,
+    "lib": ["ES2015", "DOM"],
     "jsx": "react",
-    "declaration": true,
-    "declarationMap": false,
-    "sourceMap": false,
-    "rootDir": "src",
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
-    "outDir": "lib",
-    "downlevelIteration": true,
-    "isolatedModules": true,
-    "strict": true,
-    "alwaysStrict": true,
-    "noImplicitReturns": true,
+    "module": "ESNext",
     "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
-  "exclude": [
-    "node_modules",
-    "lib",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/test-setup.ts", "**/*.test.tsx", "**/*.test.ts"]
 }
+

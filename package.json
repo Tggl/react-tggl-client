@@ -36,7 +36,7 @@
     "build:types": "tsc --project tsconfig.types.json",
     "clean": "rm -rf dist",
     "test": "node --import tsx --test $(find src -name '*.test.tsx')",
-    "test:coverage": "c8 --reporter=text --reporter=html --reporter=lcov npm test",
+    "test:coverage": "c8 --reporter=text --reporter=lcov npm test",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",

@@ -4,7 +4,7 @@ import { useTggl } from './useTggl.js';
 
 function useFlag<
   TSlug extends TgglFlagSlug,
-  TDefaultValue = TgglFlagValue<TSlug>,
+  TDefaultValue extends TgglFlagValue<TSlug> = TgglFlagValue<TSlug>,
 >(
   slug: TSlug,
   defaultValue: TDefaultValue
